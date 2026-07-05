@@ -108,6 +108,11 @@ if (WIN32)
     target_link_libraries(enet winmm ws2_32)
 endif()
 
+target_include_directories(enet
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
 include(GNUInstallDirs)
 install(TARGETS enet
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}

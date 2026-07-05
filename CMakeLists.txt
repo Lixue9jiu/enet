@@ -65,8 +65,6 @@ if(HAS_SOCKLEN_T)
     add_definitions(-DHAS_SOCKLEN_T=1)
 endif()
 
-include_directories(${PROJECT_SOURCE_DIR}/include)
-
 set(INCLUDE_FILES_PREFIX include/enet)
 set(INCLUDE_FILES
     ${INCLUDE_FILES_PREFIX}/callbacks.h
@@ -104,14 +102,14 @@ add_library(enet
     ${SOURCE_FILES}
 )
 
+target_include_directories(enet
+    PUBLIC
+        ${PROJECT_SOURCE_DIR}/include
+)
+
 if (WIN32)
     target_link_libraries(enet winmm ws2_32)
 endif()
-
-target_include_directories(enet
-    PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
 
 include(GNUInstallDirs)
 install(TARGETS enet

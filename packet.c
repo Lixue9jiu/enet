@@ -3,7 +3,6 @@
  @brief ENet packet management functions
 */
 #include <string.h>
-#include "enet/types.h"
 #define ENET_BUILDING_LIB 1
 #include "enet/enet.h"
 
@@ -34,7 +33,7 @@ enet_packet_create (const void * data, size_t dataLength, enet_uint32 flags)
        packet -> data = (enet_uint8 *) enet_malloc (dataLength);
        if (packet -> data == NULL)
        {
-          enet_free (packet, sizeof(ENetPacket));
+          enet_free (packet);
           return NULL;
        }
 
@@ -64,8 +63,8 @@ enet_packet_destroy (ENetPacket * packet)
       (* packet -> freeCallback) (packet);
     if (! (packet -> flags & ENET_PACKET_FLAG_NO_ALLOCATE) &&
         packet -> data != NULL)
-      enet_free (packet -> data, packet -> dataLength * sizeof(enet_uint8));
-    enet_free (packet, sizeof(ENetPacket));
+      enet_free (packet -> data);
+    enet_free (packet);
 }
 
 /** Attempts to resize the data in the packet to length specified in the 
@@ -95,7 +94,7 @@ enet_packet_resize (ENetPacket * packet, size_t dataLength)
        if (packet -> dataLength > 0)
          memcpy (newData, packet -> data, packet -> dataLength);
 
-       enet_free (packet -> data, packet -> dataLength * sizeof(enet_uint8));
+       enet_free (packet -> data);
     }
 
     packet -> data = newData;

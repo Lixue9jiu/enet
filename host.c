@@ -42,7 +42,7 @@ enet_host_create (const ENetAddress * address, size_t peerCount, size_t channelL
     host -> peers = (ENetPeer *) enet_malloc (peerCount * sizeof (ENetPeer));
     if (host -> peers == NULL)
     {
-       enet_free (host, sizeof(ENetHost));
+       enet_free (host);
 
        return NULL;
     }
@@ -54,8 +54,8 @@ enet_host_create (const ENetAddress * address, size_t peerCount, size_t channelL
        if (host -> socket != ENET_SOCKET_NULL)
          enet_socket_destroy (host -> socket);
 
-       enet_free (host -> peers, peerCount * sizeof (ENetPeer));
-       enet_free (host, sizeof(ENetHost));
+       enet_free (host -> peers);
+       enet_free (host);
 
        return NULL;
     }
@@ -157,8 +157,8 @@ enet_host_destroy (ENetHost * host)
     if (host -> compressor.context != NULL && host -> compressor.destroy)
       (* host -> compressor.destroy) (host -> compressor.context);
 
-    enet_free (host -> peers, host->peerCount * sizeof(ENetPeer));
-    enet_free (host, sizeof(ENetHost));
+    enet_free (host -> peers);
+    enet_free (host);
 }
 
 enet_uint32

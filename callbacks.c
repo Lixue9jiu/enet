@@ -5,12 +5,7 @@
 #define ENET_BUILDING_LIB 1
 #include "enet/enet.h"
 
-static void wrapped_free(void* data, size_t size)
-{
-  free(data);
-}
-
-static ENetCallbacks callbacks = { malloc, wrapped_free, abort };
+static ENetCallbacks callbacks = { malloc, free, abort };
 
 int
 enet_initialize_with_callbacks (ENetVersion version, const ENetCallbacks * inits)
@@ -51,8 +46,8 @@ enet_malloc (size_t size)
 }
 
 void
-enet_free (void * memory, size_t size)
+enet_free (void * memory)
 {
-   callbacks.free (memory, size);
+   callbacks.free (memory);
 }
 

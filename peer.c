@@ -3,8 +3,6 @@
  @brief ENet peer management functions
 */
 #include <string.h>
-#include "enet/list.h"
-#include "enet/types.h"
 #define ENET_BUILDING_LIB 1
 #include "enet/utility.h"
 #include "enet/enet.h"
@@ -166,7 +164,7 @@ enet_peer_send (ENetPeer * peer, enet_uint8 channelID, ENetPacket * packet)
             {
                fragment = (ENetOutgoingCommand *) enet_list_remove (enet_list_begin (& fragments));
                
-               enet_free (fragment, sizeof (ENetOutgoingCommand));
+               enet_free (fragment);
             }
             
             return -1;
@@ -248,9 +246,9 @@ enet_peer_receive (ENetPeer * peer, enet_uint8 * channelID)
    -- packet -> referenceCount;
 
    if (incomingCommand -> fragments != NULL)
-     enet_free (incomingCommand -> fragments, incomingCommand -> fragmentCount * sizeof (enet_uint32));
+     enet_free (incomingCommand -> fragments);
 
-   enet_free (incomingCommand, sizeof (ENetIncomingCommand));
+   enet_free (incomingCommand);
 
    peer -> totalWaitingData -= ENET_MIN (peer -> totalWaitingData, packet -> dataLength);
 
@@ -274,7 +272,7 @@ enet_peer_reset_outgoing_commands (ENetPeer * peer, ENetList * queue)
             enet_packet_destroy (outgoingCommand -> packet);
        }
 
-       enet_free (outgoingCommand, sizeof (ENetOutgoingCommand));
+       enet_free (outgoingCommand);
     }
 }
 
@@ -305,9 +303,9 @@ enet_peer_remove_incoming_commands (ENetPeer * peer, ENetList * queue, ENetListI
        }
 
        if (incomingCommand -> fragments != NULL)
-         enet_free (incomingCommand -> fragments, incomingCommand -> fragmentCount * sizeof (enet_uint32*));
+         enet_free (incomingCommand -> fragments);
 
-       enet_free (incomingCommand, sizeof (ENetIncomingCommand));
+       enet_free (incomingCommand);
     }
 }
 
@@ -330,7 +328,7 @@ enet_peer_reset_queues (ENetPeer * peer)
     }
 
     while (! enet_list_empty (& peer -> acknowledgements))
-      enet_free (enet_list_remove (enet_list_begin (& peer -> acknowledgements)), sizeof (ENetListIterator));
+      enet_free (enet_list_remove (enet_list_begin (& peer -> acknowledgements)));
 
     enet_peer_reset_outgoing_commands (peer, & peer -> sentReliableCommands);
     enet_peer_reset_outgoing_commands (peer, & peer -> outgoingCommands);
@@ -347,7 +345,7 @@ enet_peer_reset_queues (ENetPeer * peer)
             enet_peer_reset_incoming_commands (peer, & channel -> incomingUnreliableCommands);
         }
 
-        enet_free (peer -> channels, peer -> channelCount * sizeof (ENetChannel));
+        enet_free (peer -> channels);
     }
 
     peer -> channels = NULL;
@@ -983,7 +981,7 @@ enet_peer_queue_incoming_command (ENetPeer * peer, const ENetProtocol * command,
          incomingCommand -> fragments = (enet_uint32 *) enet_malloc ((fragmentCount + 31) / 32 * sizeof (enet_uint32));
        if (incomingCommand -> fragments == NULL)
        {
-          enet_free (incomingCommand, sizeof (ENetIncomingCommand));
+          enet_free (incomingCommand);
 
           goto notifyError;
        }

@@ -62,7 +62,7 @@ enet_range_coder_destroy (void * context)
     if (rangeCoder == NULL)
       return;
 
-    enet_free (rangeCoder, sizeof(ENetRangeCoder));
+    enet_free (rangeCoder);
 }
 
 #define ENET_SYMBOL_CREATE(symbol, value_, count_) \

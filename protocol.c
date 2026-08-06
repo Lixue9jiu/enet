@@ -184,7 +184,7 @@ enet_protocol_remove_sent_unreliable_commands (ENetPeer * peer, ENetList * sentU
            }
         }
 
-        enet_free (outgoingCommand, sizeof (ENetOutgoingCommand));
+        enet_free (outgoingCommand);
     } while (! enet_list_empty (sentUnreliableCommands));
 
     if (peer -> state == ENET_PEER_STATE_DISCONNECT_LATER &&
@@ -279,7 +279,7 @@ enet_protocol_remove_sent_reliable_command (ENetPeer * peer, enet_uint16 reliabl
        }
     }
 
-    enet_free (outgoingCommand, sizeof (ENetOutgoingCommand));
+    enet_free (outgoingCommand);
 
     if (enet_list_empty (& peer -> sentReliableCommands))
       return commandNumber;
@@ -1340,7 +1340,7 @@ enet_protocol_send_acknowledgements (ENetHost * host, ENetPeer * peer)
          enet_protocol_dispatch_state (host, peer, ENET_PEER_STATE_ZOMBIE);
 
        enet_list_remove (& acknowledgement -> acknowledgementList);
-       enet_free (acknowledgement, sizeof (ENetAcknowledgement));
+       enet_free (acknowledgement);
 
        ++ command;
        ++ buffer;
@@ -1538,7 +1538,7 @@ enet_protocol_check_outgoing_commands (ENetHost * host, ENetPeer * peer, ENetLis
                      enet_packet_destroy (outgoingCommand -> packet);
 
                    enet_list_remove (& outgoingCommand -> outgoingCommandList);
-                   enet_free (outgoingCommand, sizeof (ENetOutgoingCommand));
+                   enet_free (outgoingCommand);
 
                    if (currentCommand == enet_list_end (& peer -> outgoingCommands))
                      break;
@@ -1579,7 +1579,7 @@ enet_protocol_check_outgoing_commands (ENetHost * host, ENetPeer * peer, ENetLis
        }
        else
        if (! (outgoingCommand -> command.header.command & ENET_PROTOCOL_COMMAND_FLAG_ACKNOWLEDGE))
-         enet_free (outgoingCommand, sizeof (ENetOutgoingCommand));
+         enet_free (outgoingCommand);
 
        ++ peer -> packetsSent;
         

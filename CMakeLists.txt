@@ -102,9 +102,9 @@ add_library(enet
     ${SOURCE_FILES}
 )
 
-target_include_directories(enet
-    PUBLIC
-        ${PROJECT_SOURCE_DIR}/include
+target_include_directories(enet PUBLIC
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
 )
 
 if (WIN32)
